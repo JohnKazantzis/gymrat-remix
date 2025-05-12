@@ -17,14 +17,14 @@ export default function Workouts() {
     console.log(workouts);
     
     return(
-        <div className='flex flex-wrap gap-2 justify-start items-start'>
+        <div className='flex flex-wrap gap-2 justify-center items-start'>
             { workouts.content.map(workout => {
                 return(
-                    <div className='w-48 h-48 bg-red-400 rounded' key={workout.id}>
-                        <div className='font-bold'>{(new Date(workout.workoutDate)).toLocaleDateString()}</div>
-                        <div className='p-1 flex flex-wrap gap-0.5'>
+                    <div className='flex flex-col justify-between p-2 w-48 h-48 bg-red-400 rounded' key={workout.id}>
+                        <div className='text-gray-900 font-bold'>{(new Date(workout.workoutDate)).toLocaleDateString()}</div>
+                        <div className='flex flex-wrap gap-0.5'>
                             {workout.muscleGroups && workout.muscleGroups.map((muscleGroup) => 
-                                <div className='inline-block px-2 bg-black text-white rounded' key={muscleGroup}>
+                                <div className='inline-block px-2 bg-gray-900 text-white font-bold rounded' key={muscleGroup}>
                                     {muscleGroup}
                                 </div>
                             )}
