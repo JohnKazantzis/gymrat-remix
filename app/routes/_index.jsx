@@ -1,4 +1,8 @@
+import NavigationBar from '../components/NavigationBar';
+
 export default function Index() {
-  return (<div>Hello, there</div>);
+  return (
+    <NavigationBar></NavigationBar>
+  );
 }
 
