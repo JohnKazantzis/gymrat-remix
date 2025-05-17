@@ -16,7 +16,7 @@ export default function NavigationBar() {
             <figure>
                 <img src='/dumbbell-white.png' alt='Dumbbell'></img>
             </figure>
-            <nav className='flex justify-center items-center gap-1 md:gap-8'>
+            <nav className='flex justify-center items-center gap-1 md:gap-2'>
                 <button className={location.pathname == PATHS.home ? ACTIVE_BUTTON : INACTIVE_BUTTON}><NavLink to={PATHS.home}>Home</NavLink></button>
                 <button className={location.pathname == PATHS.workouts ? ACTIVE_BUTTON : INACTIVE_BUTTON}><NavLink to={PATHS.workouts}>Workouts</NavLink></button>
                 <button className={location.pathname.includes(PATHS.profile) ? ACTIVE_BUTTON : INACTIVE_BUTTON}><NavLink to={PATHS.profile}>Profile</NavLink></button>
