@@ -1,7 +1,9 @@
 import { json } from '@remix-run/node';
 import { useLoaderData, NavLink } from '@remix-run/react';
+import { useState } from 'react';
 import { getWorkoutsByUserId } from '../services/workoutService';
 import NavigationBar from '../components/NavigationBar';
+import WorkoutDetails from '../components/WorkoutDetails';
 
 const DEFAULT_PAGE = '0';
 const PAGINATION_PAGE_SIZE = 10;
@@ -17,10 +19,11 @@ export async function loader({ request }) {
 
 export default function Workouts() {
     const workouts = useLoaderData();
-    console.log('workouts', workouts);
     const currentPage = workouts.pageable.pageNumber;
     const pageStartNumber = currentPage * PAGINATION_PAGE_SIZE + 1 > workouts.totalElements ? workouts.totalElements : currentPage * PAGINATION_PAGE_SIZE + 1;
     const pageEndNumber = PAGINATION_PAGE_SIZE * (currentPage + 1) > workouts.totalElements ? workouts.totalElements : PAGINATION_PAGE_SIZE * (currentPage + 1);
+
+    const [openWorkoutId, setOpenWorkoutId] = useState(null);
     
     return(
         <>
@@ -28,15 +31,19 @@ export default function Workouts() {
             <div className='pt-2 flex flex-col gap-2 justify-center items-center'>
                 { workouts.content.map(workout => {
                     return(
-                        <div className='flex flex-col md:flex-row justify-between items-center p-2 w-4/5 h-24 bg-red-400 rounded hover:bg-red-600 md:w-3/5 md:h-12 cursor-pointer' key={workout.id}>
-                            <div className='text-gray-900 font-bold'>{(new Date(workout.workoutDate)).toLocaleDateString()}</div>
-                            <div className='flex flex-wrap gap-0.5'>
-                                {workout.muscleGroups && workout.muscleGroups.map((muscleGroup) => 
-                                    <div className='inline-block px-2 bg-gray-900 text-white font-bold rounded md:h-6' key={muscleGroup}>
-                                        {muscleGroup}
-                                    </div>
-                                )}
-                            </div>
+                        <div className='flex flex-col justify-center items-center w-full' key={workout.id}>
+                            <button className='flex flex-col md:flex-row justify-between items-center p-2 bg-red-400 rounded hover:bg-red-600 cursor-pointer w-4/5 h-24 md:w-3/5 md:h-12'
+                            onClick={() => setOpenWorkoutId(workout.id === openWorkoutId ? null : workout.id) }>
+                                <div className='text-gray-900 font-bold'>{(new Date(workout.workoutDate)).toLocaleDateString()}</div>
+                                <div className='flex flex-wrap gap-0.5'>
+                                    {workout.muscleGroups && workout.muscleGroups.map((muscleGroup) => 
+                                        <div className='inline-block px-2 bg-gray-900 text-white font-bold rounded md:h-6' key={muscleGroup}>
+                                            {muscleGroup}
+                                        </div>
+                                    )}
+                                </div>
+                            </button>
+                            { workout.id === openWorkoutId ? <WorkoutDetails exercises={workout.exercises}></WorkoutDetails> : <></> }
                         </div>
                     );
                 })}
@@ -68,3 +75,6 @@ export default function Workouts() {
     );
 
 }
+
+// TODO Extract the pagination to a different component
+// TODO Add the per user data
