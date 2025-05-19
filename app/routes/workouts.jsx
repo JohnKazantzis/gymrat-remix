@@ -31,13 +31,13 @@ export default function Workouts() {
             <div className='pt-2 flex flex-col gap-2 justify-center items-center'>
                 { workouts.content.map(workout => {
                     return(
-                        <div className='flex flex-col justify-center items-center w-full' key={workout.id}>
-                            <button className='flex flex-col md:flex-row justify-between items-center p-2 bg-red-400 rounded hover:bg-red-600 cursor-pointer w-4/5 h-24 md:w-3/5 md:h-12'
+                        <div className='flex flex-col justify-center items-center w-full gap-2' key={workout.id}>
+                            <button className='flex flex-col md:flex-row justify-between items-center p-2 bg-white rounded hover:bg-brink-pink-400 cursor-pointer w-4/5 h-24 md:w-3/5 md:h-12'
                             onClick={() => setOpenWorkoutId(workout.id === openWorkoutId ? null : workout.id) }>
                                 <div className='text-gray-900 font-bold'>{(new Date(workout.workoutDate)).toLocaleDateString()}</div>
                                 <div className='flex flex-wrap gap-0.5'>
                                     {workout.muscleGroups && workout.muscleGroups.map((muscleGroup) => 
-                                        <div className='inline-block px-2 bg-gray-900 text-white font-bold rounded md:h-6' key={muscleGroup}>
+                                        <div className='inline-block px-2 bg-gray-900 text-white rounded md:h-6' key={muscleGroup}>
                                             {muscleGroup}
                                         </div>
                                     )}
@@ -54,14 +54,14 @@ export default function Workouts() {
                         </p>
                     </div>
                     <div className='flex flex-row gap-2'>
-                        <button className='rounded border border-black disabled:bg-gray-300' disabled={workouts.first}>
+                        <button className='rounded border border-black bg-white disabled:bg-gray-300 text-black' disabled={workouts.first}>
                             {
                                 !workouts.first ? 
                                 <NavLink prefetch='intent' preventScrollReset to={`/workouts?page=${currentPage - 1}`} className='block py-1 px-4'>Previous</NavLink> : 
                                 <span className='block py-1 px-4'>Previous</span>
                             }
                         </button>
-                        <button className='rounded border border-black disabled:bg-gray-300' disabled={workouts.last}>
+                        <button className='rounded border border-black bg-white disabled:bg-gray-300 text-black' disabled={workouts.last}>
                             {
                                 !workouts.last ? 
                                 <NavLink prefetch='intent' preventScrollReset to={`/workouts?page=${currentPage + 1}`} className='block py-1 px-4'>Next</NavLink> : 

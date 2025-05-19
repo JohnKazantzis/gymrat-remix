@@ -1,6 +1,6 @@
 export default function WorkoutDetails({ exercises }) {
     return(
-        <div className='w-4/5 md:w-3/5 px-2 py-1'>
+        <div className='w-4/5 md:w-3/5 px-2 py-1 bg-white rounded text-black'>
             { exercises ? exercises.map(item => 
                 <div key={item.id} className='flex flex-col justify-start'>
                     <p>{item.exerciseName}</p>
