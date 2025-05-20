@@ -19,18 +19,28 @@ export default function Profile() {
         <>
             <NavigationBar></NavigationBar>
             <Form className='flex flex-col justify-center items-center my-2'>
-                <div className='w-4/5 md:w-3/12 bg-white text-gray-900 py-4 px-2 rounded flex flex-col gap-4'>
+                <div className='w-4/5 md:w-4/12 bg-white text-gray-900 py-6 px-6 rounded-lg flex flex-col gap-6'>
                     <div className='flex flex-col justify-center gap-1'>
                         <label className='font-bold' htmlFor='username'>Username</label>
-                        <input className='bg-white h-10 border border-gray-900/50 rounded text-gray-900 px-2' name='username' type='text' value={userData.username}></input>
+                        <input 
+                            className='bg-white h-10 border outline-gray-900/20 rounded-lg text-gray-900 px-2' 
+                            name='username' 
+                            type='text' 
+                            defaultValue={userData.username}>
+                        </input>
                     </div>
                     <div className='flex flex-col justify-center gap-1'>
                         <label className='font-bold' htmlFor='email'>Email</label>
-                        <input className='bg-white h-10 border border-gray-900/50 rounded text-gray-900 px-2' name='email' type='email' value={userData.email}></input>
+                        <input 
+                            className='bg-white h-10 border outline-gray-900/20 rounded-lg text-gray-900 px-2' 
+                            name='email' 
+                            type='email' 
+                            defaultValue={userData.email}>
+                        </input>
                     </div>
                     <div className='flex flex-row justify-center gap-1'>
-                        <button className='bg-emerald-500 rounded w-full py-1 font-semibold'>Update</button>
-                        <button className='bg-rose-500 rounded w-full py-1 font-semibold'>Logout</button>
+                        <button className='bg-emerald-500 rounded-md w-full py-2 font-semibold'>Update</button>
+                        <button className='bg-rose-500 rounded-md w-full py-2 font-semibold'>Logout</button>
                     </div>
                 </div>
             </Form>

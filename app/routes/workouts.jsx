@@ -49,7 +49,7 @@ export default function Workouts() {
                 })}
                 <div className='flex flex-col-reverse md:flex-row justify-center items-center md:justify-between gap-2 w-4/5 md:w-3/5'>
                     <div className='flex items-center'>
-                        <p>
+                        <p className='text-white'>
                             Showing {pageStartNumber} to {pageEndNumber} of {workouts.totalElements} results
                         </p>
                     </div>
