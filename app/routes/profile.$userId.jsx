@@ -1,13 +1,25 @@
-import { json } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
 import { useLoaderData, Form, useRouteError } from '@remix-run/react';
-import { getUserData } from '../services/userService';
+import { getUserData, updateUser } from '../services/userService';
 import NavigationBar from '../components/NavigationBar'
 
 export async function loader({ params }) {
     const userId = params.userId;
     const userData = await getUserData(userId);
+    console.log('loader - userData', userData.data)
     
     return json(userData.data);
+}
+
+export async function action({ request, params }) {
+    const formData = await request.formData();
+    const updatedUser = Object.fromEntries(formData);
+    updatedUser.id = params.userId;
+    console.log('updatedUser:', updatedUser);
+
+    await updateUser(updatedUser);
+
+    return redirect('/profile/5');
 }
 
 export default function Profile() {
@@ -18,7 +30,7 @@ export default function Profile() {
     return(
         <>
             <NavigationBar></NavigationBar>
-            <Form className='flex flex-col justify-center items-center my-2'>
+            <Form method='put' className='flex flex-col justify-center items-center my-2'>
                 <div className='w-4/5 md:w-4/12 bg-white text-gray-900 py-6 px-6 rounded-lg flex flex-col gap-6'>
                     <div className='flex flex-col justify-center gap-1'>
                         <label className='font-bold' htmlFor='username'>Username</label>
