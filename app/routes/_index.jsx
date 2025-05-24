@@ -54,7 +54,7 @@ export default function Index() {
   return (
     <>
       <NavigationBar></NavigationBar>
-      <div className='w-4/5 m-auto flex flex-row'>
+      <div className='w-4/5 m-auto flex flex-col md:flex-row items-center'>
         <div className='w-2/4'>
           <Bar options={options} data={data} />;
         </div>

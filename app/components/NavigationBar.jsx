@@ -5,6 +5,7 @@ const ACTIVE_BUTTON = 'text-brink-pink-400 border-b-2 border-brink-pink-400';
 const PATHS = {
     home: '/',
     workouts: '/workouts',
+    addworkout: '/addworkout',
     profile: `/profile/${5}`
 }
 
@@ -19,10 +20,12 @@ export default function NavigationBar() {
             <nav className='flex justify-center items-center text-lg'>
                 <button className={location.pathname == PATHS.home ? ACTIVE_BUTTON : INACTIVE_BUTTON}><NavLink className='pt-1 pb-2 px-1 md:px-4' prefetch='intent' to={PATHS.home}>Home</NavLink></button>
                 <button className={location.pathname == PATHS.workouts ? ACTIVE_BUTTON : INACTIVE_BUTTON}><NavLink className='pt-1 pb-2 px-1 md:px-4' prefetch='intent' to={PATHS.workouts}>Workouts</NavLink></button>
-                <button className={location.pathname.includes(PATHS.profile) ? ACTIVE_BUTTON : INACTIVE_BUTTON}><NavLink className='pt-1 pb-2 px-1 md:px-4' prefetch='intent' to={PATHS.profile}>Profile</NavLink></button>
+                <button className={location.pathname == PATHS.addworkout ? ACTIVE_BUTTON : INACTIVE_BUTTON}><NavLink className='pt-1 pb-2 px-1 md:px-4' prefetch='intent' to={PATHS.addworkout}>Add Workout</NavLink></button>
             </nav>
             <figure>
-                <img src='/account.png' alt='Account'></img>
+                <NavLink prefetch='intent' to={PATHS.profile}>
+                    <img src='/account.png' alt='Account'></img>
+                </NavLink>
             </figure>
         </div>
     );
