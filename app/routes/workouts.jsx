@@ -54,14 +54,14 @@ export default function Workouts() {
                         </p>
                     </div>
                     <div className='flex flex-row gap-2'>
-                        <button className='rounded border border-black bg-white disabled:bg-gray-300 text-black' disabled={workouts.first}>
+                        <button className='rounded border border-black bg-white disabled:bg-gray-300 disabled:cursor-not-allowed text-black' disabled={workouts.first}>
                             {
                                 !workouts.first ? 
                                 <NavLink prefetch='intent' preventScrollReset to={`/workouts?page=${currentPage - 1}`} className='block py-1 px-4'>Previous</NavLink> : 
                                 <span className='block py-1 px-4'>Previous</span>
                             }
                         </button>
-                        <button className='rounded border border-black bg-white disabled:bg-gray-300 text-black' disabled={workouts.last}>
+                        <button className='rounded border border-black bg-white disabled:bg-gray-300 disabled:cursor-not-allowed text-black' disabled={workouts.last}>
                             {
                                 !workouts.last ? 
                                 <NavLink prefetch='intent' preventScrollReset to={`/workouts?page=${currentPage + 1}`} className='block py-1 px-4'>Next</NavLink> : 
