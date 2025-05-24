@@ -1,12 +1,16 @@
-import NavigationBar from '../components/NavigationBar';
+import { json } from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
+import { getExercisesByMuscleGroup } from '../services/exerciseService'
+import NavigationBar from '../components/NavigationBar';
+
+export async function loader() {
+    const exercisesByMuscleGroups = await getExercisesByMuscleGroup();
+    return json(exercisesByMuscleGroups.data);
+}
 
 export default function AddWorkout() {
-    const [exercisesByMuscleGroup, setExercisesByMuscleGroup] = useState({
-        'Chest': {key: 1, exercises: [{key: 1, name: 'Bench Press', muscleGroup: 'Chest'}, {key: 2, name: 'Pec Dec', muscleGroup: 'Chest'}, {key: 3, name: 'Dumbbel Bench Press', muscleGroup: 'Chest'}, {key: 4, name: 'Incline Bench Press', muscleGroup: 'Chest'}]},
-        'Back': {key: 2, exercises: [{key: 5, name: 'Pull-up', muscleGroup: 'Back'}, {key: 6, name: 'Lat Pull Down', muscleGroup: 'Back'}, {key: 7, name: 'Rows', muscleGroup: 'Back'}]},
-        'Legs': {key: 3, exercises: [{key: 8, name: 'Leg Press', muscleGroup: 'Legs'}, {key: 9, name: 'Squat', muscleGroup: 'Legs'}, {key: 10, name: 'Deadlift', muscleGroup: 'Legs'}, {key: 11, name: 'Quad Extensions', muscleGroup: 'Legs'}]}
-    });
+    const exercisesByMuscleGroup = useLoaderData();
     const [selectedMuscle, setSelectedMuscle] = useState(Object.keys(exercisesByMuscleGroup).length > 0 ? Object.keys(exercisesByMuscleGroup)[0] : null);
     const [selectedExercises, setSelectedExercises] = useState([]);
 
@@ -61,7 +65,7 @@ export default function AddWorkout() {
                     </div>
                     : <></>
                 }
-                <div className='flex flex-col gap-1'>
+                <div className='flex flex-col gap-1 px-2 md:px-0'>
                     { exercisesByMuscleGroup && exercisesByMuscleGroup[selectedMuscle].exercises.map(exercise => 
                         <button 
                             key={exercise.key} 

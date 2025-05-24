@@ -1,7 +1,7 @@
-import axios from "axios";
+import axios from 'axios';
 
 const api = axios.create({
-    baseURL: "http://localhost:3001/api/workouts"
+    baseURL: 'http://localhost:3001/api/workouts'
 });
 
 // Add a request interceptor
@@ -16,7 +16,7 @@ const api = axios.create({
 //     (error) => Promise.reject(error)
 // );
 
-const getWorkoutsByUserId = (page, size, userId) => api.get("", {
+const getWorkoutsByUserId = (page, size, userId) => api.get('', {
     params: { 
         page: page, 
         size: size, 
