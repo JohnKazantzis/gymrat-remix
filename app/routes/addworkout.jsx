@@ -17,6 +17,15 @@ export default function AddWorkout() {
         }
         setSelectedExercises([...selectedExercises, exercise]);
     }
+
+    const muscleGroupIncluded = {};
+    selectedExercises.forEach(item => {
+        if(!Object.hasOwn(muscleGroupIncluded, item.muscleGroup)) {
+            muscleGroupIncluded[item.muscleGroup] = 0;
+        }
+        muscleGroupIncluded[item.muscleGroup] += 1;
+    });
+    console.log(muscleGroupIncluded.length)
     
     return(
         <>
@@ -38,14 +47,20 @@ export default function AddWorkout() {
                         </select>
                     </div>
                 </div>
-                <div className='flex flex-row flex-wrap gap-1 px-2 md:px-0'>
-                    { exercisesByMuscleGroup && Object.keys(exercisesByMuscleGroup).map((muscle) => 
-                        <div key={muscle} className='flex flex-row justify-between items-center gap-2 py-1 px-2 rounded bg-brink-pink-400'>
-                            <span>{muscle}</span>
-                            <span className='text-white text-xs'>{selectedExercises.reduce((accumulator, exercise) => exercise.muscleGroup === muscle ? accumulator + 1 : accumulator, 0)}</span>                    
-                        </div>)
-                    }
-                </div>
+                { 
+                    Object.keys(muscleGroupIncluded).length > 0 ?
+                    <div className='flex flex-row flex-wrap gap-1 px-2 md:px-0'>
+                        { Object.entries(muscleGroupIncluded).map(muscleGroup => {
+                            return(
+                                <div key={muscleGroup[0]} className='flex flex-row justify-between items-center gap-2 py-1 px-2 rounded bg-brink-pink-400'>
+                                    <span>{muscleGroup[0]}</span>
+                                    <span className='text-white text-xs'>{muscleGroup[1]}</span>                    
+                                </div>
+                            );
+                        })}
+                    </div>
+                    : <></>
+                }
                 <div className='flex flex-col gap-1'>
                     { exercisesByMuscleGroup && exercisesByMuscleGroup[selectedMuscle].exercises.map(exercise => 
                         <button 
