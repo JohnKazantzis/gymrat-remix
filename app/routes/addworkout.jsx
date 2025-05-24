@@ -8,7 +8,7 @@ export default function AddWorkout() {
         'Legs': {key: 3, exercises: [{key: 8, name: 'Leg Press', muscleGroup: 'Legs'}, {key: 9, name: 'Squat', muscleGroup: 'Legs'}, {key: 10, name: 'Deadlift', muscleGroup: 'Legs'}, {key: 11, name: 'Quad Extensions', muscleGroup: 'Legs'}]}
     });
     const [selectedMuscle, setSelectedMuscle] = useState(Object.keys(exercisesByMuscleGroup).length > 0 ? Object.keys(exercisesByMuscleGroup)[0] : null);
-    const [selectedExercises, setSelectedExercises] = useState([{key: 1, name: 'Bench Press', muscleGroup: 'Chest'}]);
+    const [selectedExercises, setSelectedExercises] = useState([]);
 
     const toogleExercise = exercise => {
         if(selectedExercises.find(item => item.key == exercise.key)) {
