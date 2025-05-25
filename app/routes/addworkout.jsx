@@ -3,6 +3,7 @@ import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import { getExercisesByMuscleGroup } from '../services/exerciseService'
 import NavigationBar from '../components/NavigationBar';
+import WorkoutDetails from '../components/WorkoutDetails';
 
 export async function loader() {
     const exercisesByMuscleGroups = await getExercisesByMuscleGroup();
@@ -83,16 +84,36 @@ export default function AddWorkout() {
                 }
                 <div className='flex flex-col gap-1 px-2 md:px-0'>
                     { exercisesShown && exercisesShown.map(exercise => 
-                        <button 
-                            key={exercise.key} 
-                            className='h-10 flex flex-row justify-between items-center bg-white rounded py-1 px-2 cursor-pointer hover:bg-brink-pink-400'
-                            onClick={ () => toogleExercise(exercise) }>
-                            <span>{exercise.name}</span>
-                            {   
+                        <div key={exercise.key} className='flex flex-col'>
+                            <button                                 
+                                className='h-10 flex flex-row justify-between items-center bg-white rounded py-1 px-2 cursor-pointer hover:bg-brink-pink-400'
+                                onClick={ () => toogleExercise(exercise) }>
+                                <span>{exercise.name}</span>
+                                {   
+                                    selectedExercises.find(item => item.key === exercise.key) ?
+                                    <img src='/icons8-check-mark-50.png' alt='checkmark' className='w-8 h-8'></img> : <></>
+                                }
+                            </button>
+                            {
                                 selectedExercises.find(item => item.key === exercise.key) ?
-                                <img src='/icons8-check-mark-50.png' alt='checkmark' className='w-8 h-8'></img> : <></>
+                                <div className='mt-1 w-full bg-white rounded'>
+                                    <div className='flex flex-row justify-between items-center md:px-4'>
+                                    <figure className='flex flex-row items-center md:w-1/3'>
+                                        <img src="/icons8-hashtag-32.png" alt="#"/>
+                                        {}
+                                    </figure>
+                                    <figure className='flex flex-row items-center md:w-1/3'>
+                                        <img src="/icons8-weight-kg-32.png" alt="KG"/>
+                                        {}
+                                    </figure>
+                                    <figure className='flex flex-row items-center md:w-1/3'>
+                                        <img src="/icons8-repeat-32.png" alt="Reps"/>
+                                        {}
+                                    </figure>
+                                </div>
+                                </div> : <></>
                             }
-                        </button>    
+                        </div>
                     )}
                 </div>
             </div>
