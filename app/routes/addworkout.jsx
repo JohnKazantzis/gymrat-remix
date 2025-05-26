@@ -40,6 +40,16 @@ export default function AddWorkout() {
     const exercisesShown = searchTerm ? exercisesByMuscleGroup[selectedMuscle].exercises.filter(exercise => {
         return exercise.name.toLowerCase().includes(searchTerm.toLowerCase());
     }) : exercisesByMuscleGroup[selectedMuscle].exercises;
+
+    const addSet = (event, key) => {
+        const targetExercise = selectedExercises.find(exercise => exercise.key === key);
+        if(!Object.hasOwn(targetExercise, 'sets')) {
+            targetExercise.sets = [];
+        }
+        targetExercise.sets.push({ setNumber: null, weight: null, reps: null})
+        setSelectedExercises([...selectedExercises, targetExercise]);
+        event.stopPropagation();
+    }
     
     return(
         <>
@@ -95,44 +105,37 @@ export default function AddWorkout() {
                             </button>
                             {
                                 selectedExercises.find(item => item.key === exercise.key) ?
-                                <div className='mt-1 w-full flex flex-col bg-white rounded px-4 py-2 gap-1'>
+                                <div className='mt-1 w-full flex flex-col bg-white rounded px-4 py-2 gap-1'>                                    
+                                    {
+                                        selectedExercises.find(item => item.key === exercise.key).sets ?
+                                        selectedExercises.find(item => item.key === exercise.key).sets.map((set, index) => 
+                                            <div key={index} className='flex flex-row justify-start items-center gap-4'>
+                                                <figure className='flex flex-row items-center gap-1'>
+                                                    <img src="/icons8-hashtag-32.png" alt="KG" className='w-6 h-6'/>
+                                                    <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2' disabled value={index + 1}></input>
+                                                </figure>
+                                                <figure className='flex flex-row items-center gap-1'>
+                                                    <img src="/icons8-weight-kg-32.png" alt="KG" className='w-6 h-6'/>
+                                                    <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2'></input>
+                                                </figure>
+                                                <figure className='flex flex-row items-center gap-1'>
+                                                    <img src="/icons8-repeat-32.png" alt="Reps" className='w-6 h-6'/>
+                                                    <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2'></input>
+                                                </figure>
+                                                <button onClick={() => console.log('hello')} className='w-6 h-6'>
+                                                    <img src='/icons8-delete-button-48.png' alt='x' className='hover:bg-red-500 rounded-lg'></img>
+                                                </button>
+                                            </div>
+                                        ) : <></>
+                                    }
                                     <div className='flex flex-row justify-start items-center gap-4'>
-                                        <figure className='flex flex-row items-center gap-1'>
-                                            <img src="/icons8-hashtag-32.png" alt="KG" className='w-6 h-6'/>
-                                            <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2' readOnly></input>
-                                        </figure>
-                                        <figure className='flex flex-row items-center gap-1'>
-                                            <img src="/icons8-weight-kg-32.png" alt="KG" className='w-6 h-6'/>
-                                            <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2'></input>
-                                        </figure>
-                                        <figure className='flex flex-row items-center gap-1'>
-                                            <img src="/icons8-repeat-32.png" alt="Reps" className='w-6 h-6'/>
-                                            <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2'></input>
-                                        </figure>
-                                        <button onClick={() => console.log('hello')} className='w-6 h-6'>
-                                            <img src='/icons8-delete-button-48.png' alt='x' className='hover:bg-red-500 rounded-lg'></img>
-                                        </button>
-                                    </div>
-                                    <div className='flex flex-row justify-start items-center gap-4'>
-                                        <figure className='flex flex-row items-center gap-1'>
-                                            <img src="/icons8-hashtag-32.png" alt="KG" className='w-6 h-6'/>
-                                            <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2' readOnly></input>
-                                        </figure>
-                                        <figure className='flex flex-row items-center gap-1'>
-                                            <img src="/icons8-weight-kg-32.png" alt="KG" className='w-6 h-6'/>
-                                            <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2'></input>
-                                        </figure>
-                                        <figure className='flex flex-row items-center gap-1'>
-                                            <img src="/icons8-repeat-32.png" alt="Reps" className='w-6 h-6'/>
-                                            <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2'></input>
-                                        </figure>                                        
-                                        <button onClick={() => console.log('hello')} className='w-6 h-6'>
-                                            <img src='/icons8-delete-button-48.png' alt='x' className='hover:bg-red-500 rounded-lg'></img>
-                                        </button>
-                                    </div>
-                                    <div className='flex flex-row justify-start items-center gap-4'>
-                                        <button onClick={() => console.log('hello')} className='w-6 h-6'>
-                                            <img src='/icons8-add-button-24.png' alt='+' className='hover:animate-bounce'></img>
+                                        <button onClick={() => addSet(event, exercise.key)} className='flex flex-row flex-wrap gap-1 md:gap-2'>
+                                            <img src='/icons8-add-button-24.png' alt='+' className='hover:bg-green-500 rounded-lg'></img>
+                                            {
+                                                !selectedExercises.find(item => item.key === exercise.key).sets ?
+                                                <span>No sets have been logged for this exercise</span> :
+                                                <></>
+                                            }
                                         </button>
                                     </div>
                                 </div> : <></>
