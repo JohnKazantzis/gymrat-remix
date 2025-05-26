@@ -35,20 +35,26 @@ export default function AddWorkout() {
         }
         muscleGroupIncluded[item.muscleGroup] += 1;
     });
-    console.log(muscleGroupIncluded.length)
 
     const exercisesShown = searchTerm ? exercisesByMuscleGroup[selectedMuscle].exercises.filter(exercise => {
         return exercise.name.toLowerCase().includes(searchTerm.toLowerCase());
     }) : exercisesByMuscleGroup[selectedMuscle].exercises;
 
-    const addSet = (event, key) => {
-        const targetExercise = selectedExercises.find(exercise => exercise.key === key);
+    const addSet = (event, exerciseKey) => {
+        const targetExercise = selectedExercises.find(exercise => exercise.key === exerciseKey);
         if(!Object.hasOwn(targetExercise, 'sets')) {
             targetExercise.sets = [];
         }
-        targetExercise.sets.push({ setNumber: null, weight: null, reps: null})
-        setSelectedExercises([...selectedExercises, targetExercise]);
+        targetExercise.sets.push({ key: window.crypto.randomUUID(), setNumber: null, weight: null, reps: null})
+        setSelectedExercises([...selectedExercises.filter(exercise => exercise.key !== exerciseKey), targetExercise]);
         event.stopPropagation();
+    }
+
+    const deleteSet = (exerciseKey, setKey) => {
+        console.log(setKey)
+        const targetExercise = selectedExercises.find(exercise => exercise.key === exerciseKey);
+        targetExercise.sets = targetExercise.sets.filter(set => set.key !== setKey);
+        setSelectedExercises([...selectedExercises.filter(exercise => exercise.key !== exerciseKey), targetExercise]);
     }
     
     return(
@@ -109,7 +115,7 @@ export default function AddWorkout() {
                                     {
                                         selectedExercises.find(item => item.key === exercise.key).sets ?
                                         selectedExercises.find(item => item.key === exercise.key).sets.map((set, index) => 
-                                            <div key={index} className='flex flex-row justify-start items-center gap-4'>
+                                            <div key={set.key} className='flex flex-row justify-start items-center gap-4'>
                                                 <figure className='flex flex-row items-center gap-1'>
                                                     <img src="/icons8-hashtag-32.png" alt="KG" className='w-6 h-6'/>
                                                     <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2' disabled value={index + 1}></input>
@@ -122,7 +128,7 @@ export default function AddWorkout() {
                                                     <img src="/icons8-repeat-32.png" alt="Reps" className='w-6 h-6'/>
                                                     <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2'></input>
                                                 </figure>
-                                                <button onClick={() => console.log('hello')} className='w-6 h-6'>
+                                                <button onClick={() => deleteSet(exercise.key, set.key)} className='w-6 h-6'>
                                                     <img src='/icons8-delete-button-48.png' alt='x' className='hover:bg-red-500 rounded-lg'></img>
                                                 </button>
                                             </div>
