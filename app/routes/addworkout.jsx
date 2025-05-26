@@ -3,7 +3,6 @@ import { useLoaderData } from '@remix-run/react';
 import { useState } from 'react';
 import { getExercisesByMuscleGroup } from '../services/exerciseService'
 import NavigationBar from '../components/NavigationBar';
-import WorkoutDetails from '../components/WorkoutDetails';
 
 export async function loader() {
     const exercisesByMuscleGroups = await getExercisesByMuscleGroup();
@@ -17,11 +16,11 @@ export default function AddWorkout() {
     const [searchTerm, setSearchTerm] = useState('')
 
     const toogleExercise = exercise => {
-        if(selectedExercises.find(item => item.key == exercise.key)) {
-            setSelectedExercises(selectedExercises.filter(item => item.key !== exercise.key));
-            return;
-        }
-        setSelectedExercises([...selectedExercises, exercise]);
+        setSelectedExercises(
+            selectedExercises.find(item => item.key == exercise.key) ? 
+            selectedExercises.filter(item => item.key !== exercise.key) : 
+            [...selectedExercises, exercise]
+        )
     }
 
     const changeMuscleGroup = (event) => {
@@ -96,21 +95,46 @@ export default function AddWorkout() {
                             </button>
                             {
                                 selectedExercises.find(item => item.key === exercise.key) ?
-                                <div className='mt-1 w-full bg-white rounded'>
-                                    <div className='flex flex-row justify-between items-center md:px-4'>
-                                    <figure className='flex flex-row items-center md:w-1/3'>
-                                        <img src="/icons8-hashtag-32.png" alt="#"/>
-                                        {}
-                                    </figure>
-                                    <figure className='flex flex-row items-center md:w-1/3'>
-                                        <img src="/icons8-weight-kg-32.png" alt="KG"/>
-                                        {}
-                                    </figure>
-                                    <figure className='flex flex-row items-center md:w-1/3'>
-                                        <img src="/icons8-repeat-32.png" alt="Reps"/>
-                                        {}
-                                    </figure>
-                                </div>
+                                <div className='mt-1 w-full flex flex-col bg-white rounded px-4 py-2 gap-1'>
+                                    <div className='flex flex-row justify-start items-center gap-4'>
+                                        <figure className='flex flex-row items-center gap-1'>
+                                            <img src="/icons8-hashtag-32.png" alt="KG" className='w-6 h-6'/>
+                                            <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2' readOnly></input>
+                                        </figure>
+                                        <figure className='flex flex-row items-center gap-1'>
+                                            <img src="/icons8-weight-kg-32.png" alt="KG" className='w-6 h-6'/>
+                                            <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2'></input>
+                                        </figure>
+                                        <figure className='flex flex-row items-center gap-1'>
+                                            <img src="/icons8-repeat-32.png" alt="Reps" className='w-6 h-6'/>
+                                            <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2'></input>
+                                        </figure>
+                                        <button onClick={() => console.log('hello')} className='w-6 h-6'>
+                                            <img src='/icons8-delete-button-48.png' alt='x' className='hover:bg-red-500 rounded-lg'></img>
+                                        </button>
+                                    </div>
+                                    <div className='flex flex-row justify-start items-center gap-4'>
+                                        <figure className='flex flex-row items-center gap-1'>
+                                            <img src="/icons8-hashtag-32.png" alt="KG" className='w-6 h-6'/>
+                                            <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2' readOnly></input>
+                                        </figure>
+                                        <figure className='flex flex-row items-center gap-1'>
+                                            <img src="/icons8-weight-kg-32.png" alt="KG" className='w-6 h-6'/>
+                                            <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2'></input>
+                                        </figure>
+                                        <figure className='flex flex-row items-center gap-1'>
+                                            <img src="/icons8-repeat-32.png" alt="Reps" className='w-6 h-6'/>
+                                            <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2'></input>
+                                        </figure>                                        
+                                        <button onClick={() => console.log('hello')} className='w-6 h-6'>
+                                            <img src='/icons8-delete-button-48.png' alt='x' className='hover:bg-red-500 rounded-lg'></img>
+                                        </button>
+                                    </div>
+                                    <div className='flex flex-row justify-start items-center gap-4'>
+                                        <button onClick={() => console.log('hello')} className='w-6 h-6'>
+                                            <img src='/icons8-add-button-24.png' alt='+' className='hover:animate-bounce'></img>
+                                        </button>
+                                    </div>
                                 </div> : <></>
                             }
                         </div>
