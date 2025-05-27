@@ -24,4 +24,6 @@ const getWorkoutsByUserId = (page, size, userId) => api.get('', {
     }
 });
 
-export { getWorkoutsByUserId }
+const addWorkout = (data) => api.post('', data);
+
+export { getWorkoutsByUserId, addWorkout }

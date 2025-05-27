@@ -1,19 +1,35 @@
 import { json } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { useLoaderData, useSubmit, useActionData } from '@remix-run/react';
 import { useState } from 'react';
-import { getExercisesByMuscleGroup } from '../services/exerciseService'
+import { getExercisesByMuscleGroup } from '../services/exerciseService';
+import { addWorkout } from '../services/workoutService';
 import NavigationBar from '../components/NavigationBar';
+import WorkoutSubmitted from '../components/WorkoutSubmitted';
 
 export async function loader() {
     const exercisesByMuscleGroups = await getExercisesByMuscleGroup();
     return json(exercisesByMuscleGroups.data);
 }
 
+export async function action({ request }) {
+    const formData = await request.formData();
+    let data = Object.fromEntries(formData)?.data;
+    data = JSON.parse(data);
+
+    const response = await addWorkout(data);
+    console.log(response.data);
+
+    return json(response.data);
+}
+
 export default function AddWorkout() {
     const exercisesByMuscleGroup = useLoaderData();
     const [selectedMuscle, setSelectedMuscle] = useState(Object.keys(exercisesByMuscleGroup).length > 0 ? Object.keys(exercisesByMuscleGroup)[0] : null);
     const [selectedExercises, setSelectedExercises] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('')
+    const [searchTerm, setSearchTerm] = useState('');
+    const submit = useSubmit();
+    const actionData = useActionData();
+    console.log('actionData:', actionData);
 
     const toogleExercise = exercise => {
         setSelectedExercises(
@@ -50,7 +66,6 @@ export default function AddWorkout() {
     }
 
     const deleteSet = (exerciseKey, setKey) => {
-        console.log(setKey)
         const targetExercise = selectedExercises.find(exercise => exercise.key === exerciseKey);
         targetExercise.sets = targetExercise.sets.filter(set => set.key !== setKey);
         targetExercise.sets = targetExercise.sets.map((set, index) => {
@@ -63,9 +78,7 @@ export default function AddWorkout() {
     const updateSet = (exerciseKey, setKey, event) => {
         const inputName = event.target.name;
         const targetExercise = selectedExercises.find(exercise => exercise.key === exerciseKey);
-        console.log('targetExercise.sets', targetExercise.sets.map(item => console.log(item)));
         targetExercise.sets = targetExercise.sets.map(set => {
-            console.log('set', set);
             if(set.key === setKey) {
                 set[inputName] = event.target.value;
             }
@@ -82,10 +95,24 @@ export default function AddWorkout() {
         setSearchTerm('');
         setSelectedExercises([]);
     }
+
+    
+    const logWorkout = () => {
+        const formData = new FormData();
+        formData.set("data", JSON.stringify(selectedExercises));
+        submit(formData, {
+            method: "post",
+            encType: "application/x-www-form-urlencoded",
+            preventScrollReset: false,
+            replace: false,
+            relative: "route",
+        });
+    }
     
     return(
         <>
             <NavigationBar></NavigationBar>
+            { actionData ? <WorkoutSubmitted></WorkoutSubmitted> :
             <div className='flex flex-col w-full md:w-2/6 m-auto gap-1 pt-8'>
                 <div className='flex flex-col md:flex-row justify-around md:justify-between items-center gap-2 md:gap-0'>
                     <div className='flex flex-row gap-1'>
@@ -192,9 +219,9 @@ export default function AddWorkout() {
                 </div>
                 <div className='flex flex-row justify-center gap-1 px-2 md:px-0'>
                     <button className='bg-rose-500 rounded-md w-full py-2 font-semibold' onClick={() => removeAll()}>Remove All</button>
-                    <button className='bg-emerald-500 rounded-md w-full py-2 font-semibold' onClick={() => console.log(selectedExercises)}>Log Workout</button>
+                    <button className='bg-emerald-500 rounded-md w-full py-2 font-semibold' onClick={() => logWorkout()}>Log Workout</button>
                 </div>
-            </div>
+            </div>}
         </>
     );
 }
