@@ -20,7 +20,7 @@ export default function AddWorkout() {
             selectedExercises.find(item => item.key == exercise.key) ? 
             selectedExercises.filter(item => item.key !== exercise.key) : 
             [...selectedExercises, exercise]
-        )
+        );
     }
 
     const changeMuscleGroup = (event) => {
@@ -45,9 +45,8 @@ export default function AddWorkout() {
         if(!Object.hasOwn(targetExercise, 'sets')) {
             targetExercise.sets = [];
         }
-        targetExercise.sets.push({ key: window.crypto.randomUUID(), setNumber: null, weight: null, reps: null})
+        targetExercise.sets.push({ key: window.crypto.randomUUID(), setNumber: '', weight: '', reps: null});
         setSelectedExercises([...selectedExercises.filter(exercise => exercise.key !== exerciseKey), targetExercise]);
-        event.stopPropagation();
     }
 
     const deleteSet = (exerciseKey, setKey) => {
@@ -55,6 +54,24 @@ export default function AddWorkout() {
         const targetExercise = selectedExercises.find(exercise => exercise.key === exerciseKey);
         targetExercise.sets = targetExercise.sets.filter(set => set.key !== setKey);
         setSelectedExercises([...selectedExercises.filter(exercise => exercise.key !== exerciseKey), targetExercise]);
+    }
+
+    const updateSet = (exerciseKey, setKey, event) => {
+        const inputName = event.target.name;
+        const targetExercise = selectedExercises.find(exercise => exercise.key === exerciseKey);
+        console.log('targetExercise.sets', targetExercise.sets.map(item => console.log(item)));
+        targetExercise.sets = targetExercise.sets.map(set => {
+            console.log('set', set);
+            if(set.key === setKey) {
+                set[inputName] = event.target.value;
+            }
+            return set;
+        });
+        setSelectedExercises([...selectedExercises.filter(exercise => exercise.key !== exerciseKey), targetExercise]);
+    }
+
+    const isUndefindedOrEmptyArray = (array) => {
+        return !array || array.length == 0;
     }
     
     return(
@@ -118,15 +135,31 @@ export default function AddWorkout() {
                                             <div key={set.key} className='flex flex-row justify-start items-center gap-4'>
                                                 <figure className='flex flex-row items-center gap-1'>
                                                     <img src="/icons8-hashtag-32.png" alt="KG" className='w-6 h-6'/>
-                                                    <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2' disabled value={index + 1}></input>
+                                                    <input 
+                                                        className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2' 
+                                                        disabled
+                                                        name='setNumber'
+                                                        onChange={(event) => updateSet(exercise.key, set.key, event)}
+                                                        value={index + 1}>                                                        
+                                                    </input>
                                                 </figure>
                                                 <figure className='flex flex-row items-center gap-1'>
                                                     <img src="/icons8-weight-kg-32.png" alt="KG" className='w-6 h-6'/>
-                                                    <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2'></input>
+                                                    <input 
+                                                        name='weight'
+                                                        className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2'
+                                                        onChange={(event) => updateSet(exercise.key, set.key, event)}
+                                                        value={set.weight}>
+                                                    </input>
                                                 </figure>
                                                 <figure className='flex flex-row items-center gap-1'>
                                                     <img src="/icons8-repeat-32.png" alt="Reps" className='w-6 h-6'/>
-                                                    <input className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2'></input>
+                                                    <input 
+                                                        className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2'
+                                                        name='reps'
+                                                        onChange={(event) => updateSet(exercise.key, set.key, event)}
+                                                        value={set.reps}>
+                                                    </input>
                                                 </figure>
                                                 <button onClick={() => deleteSet(exercise.key, set.key)} className='w-6 h-6'>
                                                     <img src='/icons8-delete-button-48.png' alt='x' className='hover:bg-red-500 rounded-lg'></img>
@@ -138,7 +171,7 @@ export default function AddWorkout() {
                                         <button onClick={() => addSet(event, exercise.key)} className='flex flex-row flex-wrap gap-1 md:gap-2'>
                                             <img src='/icons8-add-button-24.png' alt='+' className='hover:bg-green-500 rounded-lg'></img>
                                             {
-                                                !selectedExercises.find(item => item.key === exercise.key).sets ?
+                                                isUndefindedOrEmptyArray(selectedExercises.find(item => item.key === exercise.key).sets) ?
                                                 <span>No sets have been logged for this exercise</span> :
                                                 <></>
                                             }
@@ -149,6 +182,7 @@ export default function AddWorkout() {
                         </div>
                     )}
                 </div>
+                <button onClick={() => console.log(selectedExercises)}>Click Me!</button>
             </div>
         </>
     );
