@@ -40,12 +40,12 @@ export default function AddWorkout() {
         return exercise.name.toLowerCase().includes(searchTerm.toLowerCase());
     }) : exercisesByMuscleGroup[selectedMuscle].exercises;
 
-    const addSet = (event, exerciseKey) => {
+    const addSet = (exerciseKey) => {
         const targetExercise = selectedExercises.find(exercise => exercise.key === exerciseKey);
         if(!Object.hasOwn(targetExercise, 'sets')) {
             targetExercise.sets = [];
         }
-        targetExercise.sets.push({ key: window.crypto.randomUUID(), setNumber: '', weight: '', reps: null});
+        targetExercise.sets.push({ key: window.crypto.randomUUID(), setNumber: targetExercise.sets.length + 1, weight: '', reps: ''});
         setSelectedExercises([...selectedExercises.filter(exercise => exercise.key !== exerciseKey), targetExercise]);
     }
 
@@ -53,6 +53,10 @@ export default function AddWorkout() {
         console.log(setKey)
         const targetExercise = selectedExercises.find(exercise => exercise.key === exerciseKey);
         targetExercise.sets = targetExercise.sets.filter(set => set.key !== setKey);
+        targetExercise.sets = targetExercise.sets.map((set, index) => {
+            set.setNumber = index + 1
+            return set;
+        })
         setSelectedExercises([...selectedExercises.filter(exercise => exercise.key !== exerciseKey), targetExercise]);
     }
 
@@ -73,11 +77,16 @@ export default function AddWorkout() {
     const isUndefindedOrEmptyArray = (array) => {
         return !array || array.length == 0;
     }
+
+    const removeAll = () => {
+        setSearchTerm('');
+        setSelectedExercises([]);
+    }
     
     return(
         <>
             <NavigationBar></NavigationBar>
-            <div className='flex flex-col w-full md:w-2/6 m-auto gap-4 pt-8'>
+            <div className='flex flex-col w-full md:w-2/6 m-auto gap-1 pt-8'>
                 <div className='flex flex-col md:flex-row justify-around md:justify-between items-center gap-2 md:gap-0'>
                     <div className='flex flex-row gap-1'>
                         <img className='w-6 h-6' src='/icons8-magnifying-glass.png' alt='Dumbbell' />
@@ -102,7 +111,7 @@ export default function AddWorkout() {
                 </div>
                 { 
                     Object.keys(muscleGroupIncluded).length > 0 ?
-                    <div className='flex flex-row flex-wrap gap-1 px-2 md:px-0'>
+                    <div className='flex flex-row flex-wrap gap-1 px-2 md:px-0 mt-2'>
                         { Object.entries(muscleGroupIncluded).map(muscleGroup => {
                             return(
                                 <div key={muscleGroup[0]} className='flex flex-row justify-between items-center gap-2 py-1 px-2 rounded bg-brink-pink-400'>
@@ -114,7 +123,7 @@ export default function AddWorkout() {
                     </div>
                     : <></>
                 }
-                <div className='flex flex-col gap-1 px-2 md:px-0'>
+                <div className='flex flex-col gap-1 px-2 md:px-0 mt-2'>
                     { exercisesShown && exercisesShown.map(exercise => 
                         <div key={exercise.key} className='flex flex-col'>
                             <button                                 
@@ -131,7 +140,7 @@ export default function AddWorkout() {
                                 <div className='mt-1 w-full flex flex-col bg-white rounded px-4 py-2 gap-1'>                                    
                                     {
                                         selectedExercises.find(item => item.key === exercise.key).sets ?
-                                        selectedExercises.find(item => item.key === exercise.key).sets.map((set, index) => 
+                                        selectedExercises.find(item => item.key === exercise.key).sets.map((set) => 
                                             <div key={set.key} className='flex flex-row justify-start items-center gap-4'>
                                                 <figure className='flex flex-row items-center gap-1'>
                                                     <img src="/icons8-hashtag-32.png" alt="KG" className='w-6 h-6'/>
@@ -139,8 +148,7 @@ export default function AddWorkout() {
                                                         className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2' 
                                                         disabled
                                                         name='setNumber'
-                                                        onChange={(event) => updateSet(exercise.key, set.key, event)}
-                                                        value={index + 1}>                                                        
+                                                        value={set.setNumber}>                                                        
                                                     </input>
                                                 </figure>
                                                 <figure className='flex flex-row items-center gap-1'>
@@ -168,7 +176,7 @@ export default function AddWorkout() {
                                         ) : <></>
                                     }
                                     <div className='flex flex-row justify-start items-center gap-4'>
-                                        <button onClick={() => addSet(event, exercise.key)} className='flex flex-row flex-wrap gap-1 md:gap-2'>
+                                        <button onClick={() => addSet(exercise.key)} className='flex flex-row flex-wrap gap-1 md:gap-2'>
                                             <img src='/icons8-add-button-24.png' alt='+' className='hover:bg-green-500 rounded-lg'></img>
                                             {
                                                 isUndefindedOrEmptyArray(selectedExercises.find(item => item.key === exercise.key).sets) ?
@@ -182,7 +190,10 @@ export default function AddWorkout() {
                         </div>
                     )}
                 </div>
-                <button onClick={() => console.log(selectedExercises)}>Click Me!</button>
+                <div className='flex flex-row justify-center gap-1 px-2 md:px-0'>
+                    <button className='bg-rose-500 rounded-md w-full py-2 font-semibold' onClick={() => removeAll()}>Remove All</button>
+                    <button className='bg-emerald-500 rounded-md w-full py-2 font-semibold' onClick={() => console.log(selectedExercises)}>Log Workout</button>
+                </div>
             </div>
         </>
     );
