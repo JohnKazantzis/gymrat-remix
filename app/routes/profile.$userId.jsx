@@ -6,7 +6,6 @@ import NavigationBar from '../components/NavigationBar'
 export async function loader({ params }) {
     const userId = params.userId;
     const userData = await getUserData(userId);
-    console.log('loader - userData', userData.data)
     
     return json(userData.data);
 }
@@ -15,7 +14,6 @@ export async function action({ request, params }) {
     const formData = await request.formData();
     const updatedUser = Object.fromEntries(formData);
     updatedUser.id = params.userId;
-    console.log('updatedUser:', updatedUser);
 
     await updateUser(updatedUser);
 
@@ -24,8 +22,6 @@ export async function action({ request, params }) {
 
 export default function Profile() {
     const userData = useLoaderData();
-    console.log('userData', userData);
-    
     
     return(
         <>

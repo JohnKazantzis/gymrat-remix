@@ -15,9 +15,7 @@ export async function action({ request }) {
     const formData = await request.formData();
     let data = Object.fromEntries(formData)?.data;
     data = JSON.parse(data);
-
     const response = await addWorkout(data);
-    console.log(response.data);
 
     return json(response.data);
 }
@@ -29,7 +27,6 @@ export default function AddWorkout() {
     const [searchTerm, setSearchTerm] = useState('');
     const submit = useSubmit();
     const actionData = useActionData();
-    console.log('actionData:', actionData);
 
     const toogleExercise = exercise => {
         setSelectedExercises(
