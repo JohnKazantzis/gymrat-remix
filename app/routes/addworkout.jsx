@@ -8,7 +8,6 @@ import WorkoutSubmitted from '../components/WorkoutSubmitted';
 
 export async function loader() {
     const exercisesByMuscleGroups = await getExercisesByMuscleGroup();
-    console.log('exercisesByMuscleGroups: ', exercisesByMuscleGroups);
     return json(exercisesByMuscleGroups.data);
 }
 
@@ -23,10 +22,7 @@ export async function action({ request }) {
 
 export default function AddWorkout() {
     const exercisesByMuscleGroup = useLoaderData();
-    console.log('exercisesByMuscleGroup: ', exercisesByMuscleGroup);
-    // const [selectedMuscle, setSelectedMuscle] = useState(Object.keys(exercisesByMuscleGroup).length > 0 ? Object.keys(exercisesByMuscleGroup)[0] : null);
     const [selectedMuscle, setSelectedMuscle] = useState(exercisesByMuscleGroup.length > 0 ? exercisesByMuscleGroup[0].name : null);
-    console.log('selectedMuscle: ', exercisesByMuscleGroup.length > 0 ? 'Chest' : 'Back');
     const [selectedExercises, setSelectedExercises] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const submit = useSubmit();
@@ -34,9 +30,9 @@ export default function AddWorkout() {
 
     const toogleExercise = exercise => {
         setSelectedExercises(
-            selectedExercises.find(item => item.key == exercise.key) ? 
-            selectedExercises.filter(item => item.key !== exercise.key) : 
-            [...selectedExercises, exercise]
+            selectedExercises.find(item => item.name == exercise) ? 
+            selectedExercises.filter(item => item.name !== exercise) : 
+            [...selectedExercises, { name: exercise, muscleGroup: selectedMuscle }]
         );
     }
 
@@ -54,47 +50,43 @@ export default function AddWorkout() {
     });
 
     let exercisesShown = exercisesByMuscleGroup.filter(muscleGroup => {
-        console.log('1: mg: ', muscleGroup)
-        console.log('1: cond: ', muscleGroup.name === selectedMuscle)
         return muscleGroup.name === selectedMuscle
     })[0].exercises;
-    console.log('exercisesShown 1: ', exercisesShown);
     if(searchTerm) {
-        exercisesShown = exercisesShown.exercises.filter(exercise => {
-            return exercise.name.toLowerCase().includes(searchTerm.toLowerCase());
+        exercisesShown = exercisesShown.filter(exercise => {
+            return exercise.toLowerCase().includes(searchTerm.toLowerCase());
         })
     }
-    console.log('exercisesShown: ', exercisesShown);
 
-    const addSet = (exerciseKey) => {
-        const targetExercise = selectedExercises.find(exercise => exercise.key === exerciseKey);
+    const addSet = (exerciseName) => {
+        const targetExercise = selectedExercises.find(exercise => exercise.name === exerciseName);
         if(!Object.hasOwn(targetExercise, 'sets')) {
             targetExercise.sets = [];
         }
         targetExercise.sets.push({ key: window.crypto.randomUUID(), setNumber: targetExercise.sets.length + 1, weight: '', reps: ''});
-        setSelectedExercises([...selectedExercises.filter(exercise => exercise.key !== exerciseKey), targetExercise]);
+        setSelectedExercises([...selectedExercises.filter(exercise => exercise.name !== exerciseName), targetExercise]);
     }
 
-    const deleteSet = (exerciseKey, setKey) => {
-        const targetExercise = selectedExercises.find(exercise => exercise.key === exerciseKey);
+    const deleteSet = (exerciseName, setKey) => {
+        const targetExercise = selectedExercises.find(exercise => exercise.name === exerciseName);
         targetExercise.sets = targetExercise.sets.filter(set => set.key !== setKey);
         targetExercise.sets = targetExercise.sets.map((set, index) => {
             set.setNumber = index + 1
             return set;
         })
-        setSelectedExercises([...selectedExercises.filter(exercise => exercise.key !== exerciseKey), targetExercise]);
+        setSelectedExercises([...selectedExercises.filter(exercise => exercise.name !== exerciseName), targetExercise]);
     }
 
-    const updateSet = (exerciseKey, setKey, event) => {
+    const updateSet = (exerciseName, setKey, event) => {
         const inputName = event.target.name;
-        const targetExercise = selectedExercises.find(exercise => exercise.key === exerciseKey);
+        const targetExercise = selectedExercises.find(exercise => exercise.name === exerciseName);
         targetExercise.sets = targetExercise.sets.map(set => {
             if(set.key === setKey) {
                 set[inputName] = event.target.value;
             }
             return set;
         });
-        setSelectedExercises([...selectedExercises.filter(exercise => exercise.key !== exerciseKey), targetExercise]);
+        setSelectedExercises([...selectedExercises.filter(exercise => exercise.name !== exerciseName), targetExercise]);
     }
 
     const isUndefindedOrEmptyArray = (array) => {
@@ -118,8 +110,6 @@ export default function AddWorkout() {
             relative: "route",
         });
     }
-
-    // return(<div>he</div>)
     
     return(
         <>
@@ -170,16 +160,16 @@ export default function AddWorkout() {
                                 onClick={ () => toogleExercise(exercise) }>
                                 <span>{exercise}</span>
                                 {   
-                                    selectedExercises.find(item => item === exercise) ?
+                                    selectedExercises.find(item => item.name === exercise) ?
                                     <img src='/icons8-check-mark-50.png' alt='checkmark' className='w-8 h-8'></img> : <></>
                                 }
                             </button>
                             {
-                                selectedExercises.find(item => item.key === exercise.key) ?
+                                selectedExercises.find(item => item.name === exercise) ?
                                 <div className='mt-1 w-full flex flex-col bg-white rounded px-4 py-2 gap-1'>                                    
                                     {
-                                        selectedExercises.find(item => item.key === exercise.key).sets ?
-                                        selectedExercises.find(item => item.key === exercise.key).sets.map((set) => 
+                                        selectedExercises.find(item => item.name === exercise).sets ?
+                                        selectedExercises.find(item => item.name === exercise).sets.map((set) => 
                                             <div key={set.key} className='flex flex-row justify-start items-center gap-4'>
                                                 <figure className='flex flex-row items-center gap-1'>
                                                     <img src="/icons8-hashtag-32.png" alt="KG" className='w-6 h-6'/>
@@ -195,7 +185,7 @@ export default function AddWorkout() {
                                                     <input 
                                                         name='weight'
                                                         className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2'
-                                                        onChange={(event) => updateSet(exercise.key, set.key, event)}
+                                                        onChange={(event) => updateSet(exercise, set.key, event)}
                                                         value={set.weight}>
                                                     </input>
                                                 </figure>
@@ -204,21 +194,21 @@ export default function AddWorkout() {
                                                     <input 
                                                         className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2'
                                                         name='reps'
-                                                        onChange={(event) => updateSet(exercise.key, set.key, event)}
+                                                        onChange={(event) => updateSet(exercise, set.key, event)}
                                                         value={set.reps}>
                                                     </input>
                                                 </figure>
-                                                <button onClick={() => deleteSet(exercise.key, set.key)} className='w-6 h-6'>
+                                                <button onClick={() => deleteSet(exercise, set.key)} className='w-6 h-6'>
                                                     <img src='/icons8-delete-button-48.png' alt='x' className='hover:bg-red-500 rounded-lg'></img>
                                                 </button>
                                             </div>
                                         ) : <></>
                                     }
                                     <div className='flex flex-row justify-start items-center gap-4'>
-                                        <button onClick={() => addSet(exercise.key)} className='flex flex-row flex-wrap gap-1 md:gap-2'>
+                                        <button onClick={() => addSet(exercise)} className='flex flex-row flex-wrap gap-1 md:gap-2'>
                                             <img src='/icons8-add-button-24.png' alt='+' className='hover:bg-green-500 rounded-lg'></img>
                                             {
-                                                isUndefindedOrEmptyArray(selectedExercises.find(item => item.key === exercise.key).sets) ?
+                                                isUndefindedOrEmptyArray(selectedExercises.find(item => item.name === exercise).sets) ?
                                                 <span>No sets have been logged for this exercise</span> :
                                                 <></>
                                             }
