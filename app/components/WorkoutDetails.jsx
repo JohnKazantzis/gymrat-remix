@@ -9,15 +9,15 @@ export default function WorkoutDetails({ exercises }) {
                             return(
                                 <div key={set.setNumber} className='flex flex-row justify-between items-center md:px-4'>
                                     <figure className='flex flex-row items-center md:w-1/3'>
-                                        <img src="/icons8-hashtag-32.png" alt="#"/>
+                                        <img className='w-6 h-6' src="/icons8-hashtag-32.png" alt="#"/>
                                         {set.setNumber}
                                     </figure>
                                     <figure className='flex flex-row items-center md:w-1/3'>
-                                        <img src="/icons8-weight-kg-32.png" alt="KG"/>
+                                        <img className='w-6 h-6' src="/icons8-weight-kg-32.png" alt="KG"/>
                                         {set.weight}
                                     </figure>
                                     <figure className='flex flex-row items-center md:w-1/3'>
-                                        <img src="/icons8-repeat-32.png" alt="Reps"/>
+                                        <img className='w-6 h-6' src="/icons8-repeat-32.png" alt="Reps"/>
                                         {set.reps}
                                     </figure>
                                 </div>

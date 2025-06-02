@@ -140,7 +140,7 @@ export default function AddWorkout() {
                 </div>
                 { 
                     Object.keys(muscleGroupIncluded).length > 0 ?
-                    <div className='flex flex-row flex-wrap gap-1 px-2 md:px-0 mt-2'>
+                    <div className='flex flex-row flex-wrap gap-1 px-2 md:px-0 md:mt-2'>
                         { Object.entries(muscleGroupIncluded).map(muscleGroup => {
                             return(
                                 <div key={muscleGroup[0]} className='flex flex-row justify-between items-center gap-2 py-1 px-2 rounded bg-brink-pink-400'>
@@ -152,9 +152,9 @@ export default function AddWorkout() {
                     </div>
                     : <></>
                 }
-                <div className='flex flex-col gap-1 px-2 md:px-0 mt-2'>
+                <div className='flex flex-col gap-1 px-2 md:px-0 mt-2 md:max-h-[35rem] md:scrollbar overflow-auto'>
                     { exercisesShown && exercisesShown.map(exercise => 
-                        <div key={exercise} className='flex flex-col'>
+                        <div key={exercise} className='flex flex-col md:mr-1'>
                             <button                                 
                                 className='h-10 flex flex-row justify-between items-center bg-white rounded py-1 px-2 cursor-pointer hover:bg-brink-pink-400'
                                 onClick={ () => toogleExercise(exercise) }>
@@ -219,7 +219,7 @@ export default function AddWorkout() {
                         </div>
                     )}
                 </div>
-                <div className='flex flex-row justify-center gap-1 px-2 md:px-0'>
+                <div className='flex flex-row justify-center gap-1 px-2 md:px-0 md:mr-4'>
                     <button className='bg-rose-500 rounded-md w-full py-2 font-semibold' onClick={() => removeAll()}>Remove All</button>
                     <button className='bg-emerald-500 rounded-md w-full py-2 font-semibold' onClick={() => logWorkout()}>Log Workout</button>
                 </div>
