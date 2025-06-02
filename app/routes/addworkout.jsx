@@ -8,6 +8,7 @@ import WorkoutSubmitted from '../components/WorkoutSubmitted';
 
 export async function loader() {
     const exercisesByMuscleGroups = await getExercisesByMuscleGroup();
+    console.log('exercisesByMuscleGroups: ', exercisesByMuscleGroups);
     return json(exercisesByMuscleGroups.data);
 }
 
@@ -22,7 +23,10 @@ export async function action({ request }) {
 
 export default function AddWorkout() {
     const exercisesByMuscleGroup = useLoaderData();
-    const [selectedMuscle, setSelectedMuscle] = useState(Object.keys(exercisesByMuscleGroup).length > 0 ? Object.keys(exercisesByMuscleGroup)[0] : null);
+    console.log('exercisesByMuscleGroup: ', exercisesByMuscleGroup);
+    // const [selectedMuscle, setSelectedMuscle] = useState(Object.keys(exercisesByMuscleGroup).length > 0 ? Object.keys(exercisesByMuscleGroup)[0] : null);
+    const [selectedMuscle, setSelectedMuscle] = useState(exercisesByMuscleGroup.length > 0 ? exercisesByMuscleGroup[0].name : null);
+    console.log('selectedMuscle: ', exercisesByMuscleGroup.length > 0 ? 'Chest' : 'Back');
     const [selectedExercises, setSelectedExercises] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
     const submit = useSubmit();
@@ -49,9 +53,18 @@ export default function AddWorkout() {
         muscleGroupIncluded[item.muscleGroup] += 1;
     });
 
-    const exercisesShown = searchTerm ? exercisesByMuscleGroup[selectedMuscle].exercises.filter(exercise => {
-        return exercise.name.toLowerCase().includes(searchTerm.toLowerCase());
-    }) : exercisesByMuscleGroup[selectedMuscle].exercises;
+    let exercisesShown = exercisesByMuscleGroup.filter(muscleGroup => {
+        console.log('1: mg: ', muscleGroup)
+        console.log('1: cond: ', muscleGroup.name === selectedMuscle)
+        return muscleGroup.name === selectedMuscle
+    })[0].exercises;
+    console.log('exercisesShown 1: ', exercisesShown);
+    if(searchTerm) {
+        exercisesShown = exercisesShown.exercises.filter(exercise => {
+            return exercise.name.toLowerCase().includes(searchTerm.toLowerCase());
+        })
+    }
+    console.log('exercisesShown: ', exercisesShown);
 
     const addSet = (exerciseKey) => {
         const targetExercise = selectedExercises.find(exercise => exercise.key === exerciseKey);
@@ -105,6 +118,8 @@ export default function AddWorkout() {
             relative: "route",
         });
     }
+
+    // return(<div>he</div>)
     
     return(
         <>
@@ -125,9 +140,9 @@ export default function AddWorkout() {
                     <div className='flex flex-row'>
                         <p className='text-white'>Search in</p>
                         <select name='musclegroups' defaultValue={selectedMuscle} onChange={(event) => changeMuscleGroup(event)} className='bg-gray-900 text-white cursor-pointer'>
-                            { exercisesByMuscleGroup && Object.keys(exercisesByMuscleGroup).map(muscle => 
-                                <option key={muscle} value={muscle}>
-                                    {muscle}
+                            { exercisesByMuscleGroup && exercisesByMuscleGroup.map(muscle => 
+                                <option key={muscle._id} value={muscle.name}>
+                                    {muscle.name}
                                 </option>
                             )}
                         </select>
@@ -149,13 +164,13 @@ export default function AddWorkout() {
                 }
                 <div className='flex flex-col gap-1 px-2 md:px-0 mt-2'>
                     { exercisesShown && exercisesShown.map(exercise => 
-                        <div key={exercise.key} className='flex flex-col'>
+                        <div key={exercise} className='flex flex-col'>
                             <button                                 
                                 className='h-10 flex flex-row justify-between items-center bg-white rounded py-1 px-2 cursor-pointer hover:bg-brink-pink-400'
                                 onClick={ () => toogleExercise(exercise) }>
-                                <span>{exercise.name}</span>
+                                <span>{exercise}</span>
                                 {   
-                                    selectedExercises.find(item => item.key === exercise.key) ?
+                                    selectedExercises.find(item => item === exercise) ?
                                     <img src='/icons8-check-mark-50.png' alt='checkmark' className='w-8 h-8'></img> : <></>
                                 }
                             </button>
