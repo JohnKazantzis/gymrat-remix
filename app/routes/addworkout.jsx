@@ -172,7 +172,7 @@ export default function AddWorkout() {
                                         selectedExercises.find(item => item.name === exercise).sets.map((set) => 
                                             <div key={set.key} className='flex flex-row justify-start items-center gap-4'>
                                                 <figure className='flex flex-row items-center gap-1'>
-                                                    <img src="/icons8-hashtag-32.png" alt="KG" className='w-6 h-6'/>
+                                                    <img src="/icons8-hashtag-32.png" alt="#" className='w-6 h-6'/>
                                                     <input 
                                                         className='w-14 bg-white border outline-gray-900/20 rounded text-gray-900 px-2' 
                                                         disabled

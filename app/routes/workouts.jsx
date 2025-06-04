@@ -19,7 +19,7 @@ export async function loader({ request }) {
 
 export default function Workouts() {
     const workouts = useLoaderData();
-    const currentPage = workouts.pageable.pageNumber;
+    const currentPage = workouts.pageNumber;
     const pageStartNumber = currentPage * PAGINATION_PAGE_SIZE + 1 > workouts.totalElements ? workouts.totalElements : currentPage * PAGINATION_PAGE_SIZE + 1;
     const pageEndNumber = PAGINATION_PAGE_SIZE * (currentPage + 1) > workouts.totalElements ? workouts.totalElements : PAGINATION_PAGE_SIZE * (currentPage + 1);
 
@@ -29,12 +29,12 @@ export default function Workouts() {
         <>
             <NavigationBar></NavigationBar>
             <div className='pt-2 flex flex-col gap-2 justify-center items-center'>
-                { workouts.content.map(workout => {
+                { workouts.workouts.map(workout => {
                     return(
                         <div className='flex flex-col justify-center items-center w-full gap-2' key={workout.id}>
                             <button className='flex flex-col md:flex-row justify-between items-center p-2 bg-white rounded hover:bg-brink-pink-400 cursor-pointer w-4/5 h-24 md:w-3/5 md:h-12'
                             onClick={() => setOpenWorkoutId(workout.id === openWorkoutId ? null : workout.id) }>
-                                <div className='text-gray-900 font-bold'>{(new Date(workout.workoutDate)).toLocaleDateString()}</div>
+                                <div className='text-gray-900 font-bold'>{workout.workoutDate}</div>
                                 <div className='flex flex-wrap gap-0.5'>
                                     {workout.muscleGroups && workout.muscleGroups.map((muscleGroup) => 
                                         <div className='inline-block px-2 bg-gray-900 text-white rounded md:h-6' key={muscleGroup}>
