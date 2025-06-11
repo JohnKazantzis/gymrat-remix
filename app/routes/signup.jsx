@@ -1,10 +1,14 @@
 import { Form, NavLink } from '@remix-run/react';
+import { signUp } from '../services/authService';
 
 export async function action({ request }) {
     const formData = await request.formData();
-    const data = Object.fromEntries(formData);
+    const user = Object.fromEntries(formData);
 
-    console.log('sign up data', data)
+    console.log('sign up data', user)
+
+    const signUpResponse = await signUp(user);
+    console.log('signUpResponse: ', signUpResponse.data);
 
     return null;
 }
